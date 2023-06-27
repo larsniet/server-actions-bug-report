@@ -12,16 +12,22 @@ export default async function RootLayout({
 }) {
   // The code below is giving the error:
   // Cookies can only be modified in a Server Action or Route Handler.
-  async function setCookie() {
+  async function deleteCookie(name: string) {
     "use server";
 
-    cookies().set({
-      name: "testCookie",
-      value: "testValue",
-      httpOnly: true,
-    });
+    try {
+      cookies().set({
+        name: name,
+        value: "",
+        expires: new Date("2016-10-05"),
+        path: "/",
+      });
+    } catch (error) {
+      console.error(`Error deleting cookie: ${name}`, error);
+      throw error;
+    }
   }
-  await setCookie();
+  await deleteCookie("test");
 
   return (
     <html>
